@@ -1,4 +1,3 @@
-
 # These are intended to be public APIs and are deliberately injected into the
 # Recipe DSL for use by end-users.  They should really get documented in
 # the README.md
@@ -9,9 +8,9 @@ module SshknownhostsRecipeHelpers
       :node,
       query,
       filter_result: {
-        'hostname'        => ['hostname'],
-        'fqdn'            => ['fqdn'],
-        'ipaddress'       => ['ipaddress'],
+        'hostname' => ['hostname'],
+        'fqdn' => ['fqdn'],
+        'ipaddress' => ['ipaddress'],
         'rsa' => %w(keys ssh host_rsa_public),
         'dsa' => %w(keys ssh host_dsa_public),
         'ecdsa' => %w(keys ssh host_ecdsa_public),
@@ -79,7 +78,7 @@ module SshknownhostsRecipeHelpers
 
   # takes node-ish object and finds a useful enough fqdn
   def fqdn_from_node(node)
-    node['fqdn'] || node['ipaddress'] || node['hostname']
+    [node['fqdn'], node['ipaddress'], node['hostname']].reject { |n| n.nil? || n.empty? }.join(',')
   end
 
   def key_types_from_node(data)
@@ -93,4 +92,4 @@ module SshknownhostsRecipeHelpers
   end
 end
 
-Chef::DSL::Recipe.send(:include, SshknownhostsRecipeHelpers)
+Chef::DSL::Recipe.include SshknownhostsRecipeHelpers
